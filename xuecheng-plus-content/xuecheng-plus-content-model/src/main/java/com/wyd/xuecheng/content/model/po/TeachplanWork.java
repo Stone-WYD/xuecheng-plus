@@ -1,4 +1,4 @@
-package com.wyd.xuecheng.content.model;
+package com.wyd.xuecheng.content.model.po;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -17,8 +17,8 @@ import com.baomidou.mybatisplus.annotation.TableName;
  * @author wyd
  */
 @Data
-@TableName("teachplan_media")
-public class TeachplanMedia implements Serializable {
+@TableName("teachplan_work")
+public class TeachplanWork implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -29,9 +29,14 @@ public class TeachplanMedia implements Serializable {
     private Long id;
 
     /**
-     * 媒资文件id
+     * 作业信息标识
      */
-    private String mediaId;
+    private Long workId;
+
+    /**
+     * 作业标题
+     */
+    private String workTitle;
 
     /**
      * 课程计划标识
@@ -43,24 +48,10 @@ public class TeachplanMedia implements Serializable {
      */
     private Long courseId;
 
-    /**
-     * 媒资文件原始名称
-     */
-    @TableField("media_fileName")
-    private String mediaFilename;
-
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createDate;
 
-    /**
-     * 创建人
-     */
-    private String createPeople;
-
-    /**
-     * 修改人
-     */
-    private String changePeople;
+    private Long coursePubId;
 
 
 }
