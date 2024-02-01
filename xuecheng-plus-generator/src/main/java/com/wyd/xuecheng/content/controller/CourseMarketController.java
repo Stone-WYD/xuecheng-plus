@@ -1,8 +1,10 @@
 package com.wyd.xuecheng.content.controller;
 
-import com.wyd.xuecheng.content.service.CourseMarketService;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import com.wyd.xuecheng.content.service.CourseMarketService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -11,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * 课程营销信息 前端控制器
  * </p>
  *
- * @author itcast
+ * @author wyd
  */
 @Slf4j
 @RestController
@@ -19,5 +21,5 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class CourseMarketController {
 
     @Autowired
-    private CourseMarketService courseMarketService;
+    private CourseMarketService  courseMarketService;
 }

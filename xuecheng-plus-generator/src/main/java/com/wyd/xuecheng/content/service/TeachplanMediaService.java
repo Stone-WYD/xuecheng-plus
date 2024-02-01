@@ -8,8 +8,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
  *  服务类
  * </p>
  *
- * @author itcast
- * @since 2022-10-07
+ * @author wyd
+ * @since 2024-02-01
  */
 public interface TeachplanMediaService extends IService<TeachplanMedia> {
 

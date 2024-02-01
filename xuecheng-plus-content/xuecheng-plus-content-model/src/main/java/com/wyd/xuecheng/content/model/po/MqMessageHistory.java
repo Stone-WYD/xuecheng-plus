@@ -1,9 +1,10 @@
 package com.wyd.xuecheng.content.model.po;
 
-import java.time.LocalDateTime;
-import java.io.Serializable;
-import lombok.Data;
 import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.Data;
+
+import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /**
  * <p>
