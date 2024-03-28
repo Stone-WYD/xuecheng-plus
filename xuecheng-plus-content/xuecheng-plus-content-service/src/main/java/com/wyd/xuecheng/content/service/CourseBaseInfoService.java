@@ -1,5 +1,7 @@
 package com.wyd.xuecheng.content.service;
 
+import com.wyd.xuecheng.content.model.dto.AddCourseDto;
+import com.wyd.xuecheng.content.model.dto.CourseBaseInfoDto;
 import com.wyd.xuecheng.content.model.dto.QueryCourseParamsDto;
 import com.wyd.xuecheng.content.model.po.CourseBase;
 import com.wyd.xuecheng.model.PageParams;
@@ -17,4 +19,14 @@ public interface CourseBaseInfoService  {
      */
     PageResult<CourseBase> queryCourseBaseList(PageParams pageParams, QueryCourseParamsDto queryCourseParamsDto);
 
+
+    /**
+     * @description 添加课程基本信息
+     * @param companyId  教学机构id
+     * @param addCourseDto  课程基本信息
+     * @return com.xuecheng.content.model.dto.CourseBaseInfoDto
+     * @author Mr.M
+     * @date 2022/9/7 17:51
+     */
+    CourseBaseInfoDto createCourseBase(Long companyId, AddCourseDto addCourseDto);
 }

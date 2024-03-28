@@ -1,5 +1,7 @@
 package com.wyd.xuecheng.content.api;
 
+import com.wyd.xuecheng.content.model.dto.AddCourseDto;
+import com.wyd.xuecheng.content.model.dto.CourseBaseInfoDto;
 import com.wyd.xuecheng.content.model.dto.QueryCourseParamsDto;
 import com.wyd.xuecheng.content.model.po.CourseBase;
 import com.wyd.xuecheng.content.service.CourseBaseInfoService;
@@ -30,6 +32,12 @@ public class CourseBaseInfoController {
     @PostMapping("/course/list")
     public PageResult<CourseBase> list(PageParams pageParams, @RequestBody (required=false) QueryCourseParamsDto queryCourseParams){
        return courseBaseInfoService.queryCourseBaseList(pageParams, queryCourseParams);
+    }
+
+    @ApiOperation("新增课程基础信息")
+    @PostMapping("/course")
+    public CourseBaseInfoDto createCourseBase(@RequestBody AddCourseDto addCourseDto){
+        return null;
     }
 
 }
