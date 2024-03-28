@@ -4,8 +4,8 @@ import com.wyd.xuecheng.content.model.dto.AddCourseDto;
 import com.wyd.xuecheng.content.model.dto.CourseBaseInfoDto;
 import com.wyd.xuecheng.content.model.dto.QueryCourseParamsDto;
 import com.wyd.xuecheng.content.model.po.CourseBase;
-import com.wyd.xuecheng.model.PageParams;
-import com.wyd.xuecheng.model.PageResult;
+import com.wyd.xuecheng.base.model.PageParams;
+import com.wyd.xuecheng.base.model.PageResult;
 
 public interface CourseBaseInfoService  {
 

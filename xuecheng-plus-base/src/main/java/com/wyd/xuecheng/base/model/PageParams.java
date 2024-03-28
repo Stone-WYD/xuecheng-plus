@@ -1,4 +1,4 @@
-package com.wyd.xuecheng.model;
+package com.wyd.xuecheng.base.model;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
