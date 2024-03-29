@@ -12,4 +12,5 @@ import com.wyd.xuecheng.content.model.po.TeachplanMedia;
  */
 public interface TeachplanMediaMapper extends BaseMapper<TeachplanMedia> {
 
+    void deleteByTeachplanId(Long teachplanId);
 }
