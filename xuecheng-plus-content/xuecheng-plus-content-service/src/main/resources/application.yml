@@ -1,0 +1,8 @@
+# service 模块被 api 模块引用，当配置文件名为 application.yml 时，该文件中的配置会被 api 模块使用，但配置文件名为 bootstrap.yml 时不会被使用
+
+#spring:
+#  datasource:
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#    url: jdbc:mysql://localhost:3306/content?serverTimezone=UTC&userUnicode=true&useSSL=false&
+#    username: root
+#    password: 123456

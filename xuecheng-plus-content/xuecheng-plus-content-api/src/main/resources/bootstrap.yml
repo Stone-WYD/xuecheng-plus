@@ -1,29 +1,55 @@
-server:
-  servlet:
-    context-path: /content
-  port: 63040
-#微服务配置
+##不使用 nacos 的配置管理时的配置
+#server:
+#  servlet:
+#    context-path: /content
+#  port: 63040
+##微服务配置
+#spring:
+#  application:
+#    name: content-api
+#  cloud:
+#    nacos:
+#      server-addr: 192.168.31.76:8848
+#      discovery:
+#        namespace: dev
+#        group: xuecheng-plus-project
+#  datasource:
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#    url: jdbc:mysql://localhost:3306/content?serverTimezone=UTC&userUnicode=true&useSSL=false&
+#    username: root
+#    password: 123456
+##日志文件配置路径
+#logging:
+#  config: classpath:log4j2-dev.xml
+#
+#swagger:
+#  title: "学成在线内容管理系统"
+#  description: "内容系统管理系统对课程相关信息进行管理"
+#  base-package: com.wyd.xuecheng.content
+#  enabled: true
+#  version: 1.0.0
+
 spring:
   application:
     name: content-api
+  #profiles默认为dev
+  profiles:
+    active: dev
   cloud:
     nacos:
       server-addr: 192.168.31.76:8848
       discovery:
         namespace: dev
         group: xuecheng-plus-project
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/content?serverTimezone=UTC&userUnicode=true&useSSL=false&
-    username: root
-    password: 123456
-# 日志文件配置路径
-logging:
-  config: classpath:log4j2-dev.xml
-
-swagger:
-  title: "学成在线内容管理系统"
-  description: "内容系统管理系统对课程相关信息进行管理"
-  base-package: com.wyd.xuecheng.content
-  enabled: true
-  version: 1.0.0
+      config:
+        # 根据 namespace 和 group ，nacos 找到配置所在 group
+        namespace: dev
+        group: xuecheng-plus-project
+        # 根据 spring.application.name 、spring.profiles.active 和  file-extension 拼成具体的配置文件名，nacos 在 group 中找到具体配置文件
+        file-extension: yml
+        refresh-enabled: true
+        extension-configs:
+          # 扩展配置需要在同一个 spring.cloud.nacos.config.namespace 中，然后根据 data-id 和 group 找到具体的配置文件
+          - data-id: content-service-${spring.profiles.active}.yaml
+            group: xuecheng-plus-project
+            refresh: true

@@ -1,10 +1,29 @@
+#spring:
+#  datasource:
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#    url: jdbc:mysql://localhost:3306/content?serverTimezone=UTC&userUnicode=true&useSSL=false&
+#    username: root
+#    password: 123456
+## 日志文件配置路径
+#logging:
+#  config: classpath:log4j2-dev.xml
 
+# 测试文件中的配置在测试时才会生效
 spring:
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/content?serverTimezone=UTC&userUnicode=true&useSSL=false&
-    username: root
-    password: 123456
-# 日志文件配置路径
-logging:
-  config: classpath:log4j2-dev.xml
+  application:
+    name: content-service
+  cloud:
+    nacos:
+      server-addr: 192.168.31.76:8848
+      discovery:
+        namespace: dev
+        group: xuecheng-plus-project
+      config:
+        namespace: dev
+        group: xuecheng-plus-project
+        file-extension: yaml
+        refresh-enabled: true
+
+  #profiles默认为dev
+  profiles:
+    active: dev
