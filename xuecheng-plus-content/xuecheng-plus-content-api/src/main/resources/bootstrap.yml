@@ -53,3 +53,13 @@ spring:
           - data-id: content-service-${spring.profiles.active}.yaml
             group: xuecheng-plus-project
             refresh: true
+        shared-configs:
+          # 类似与 extension-configs，对一些共享通用配置进行配置
+          - data-id: swagger-${spring.profiles.active}.yaml
+            group: xuecheng-plus-common
+            refresh: true
+          - data-id: log-${spring.profiles.active}.yaml
+            group: xuecheng-plus-common
+            refresh: true
+
+# 关于配置文件的优先级：本地文件先加载，nacos 上的配置后加载（毕竟 nacos 配置需要通过网络才能获取，会比较慢），但是 nacos 的配置会覆盖已经加入的同名配置
