@@ -1,7 +1,10 @@
 package com.wyd.xuecheng.content.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.wyd.xuecheng.content.model.dto.CourseTeacherDTO;
 import com.wyd.xuecheng.content.model.po.CourseTeacher;
+
+import java.util.List;
 
 /**
  * <p>
@@ -13,4 +16,9 @@ import com.wyd.xuecheng.content.model.po.CourseTeacher;
  */
 public interface CourseTeacherService extends IService<CourseTeacher> {
 
+    List<CourseTeacherDTO> queryCourseTeacher(Long courseId);
+
+    CourseTeacherDTO saveCourseTeacher(CourseTeacherDTO teacherDTO);
+
+    void deleteCourseTeacher(Long courseId, Long teacherId);
 }
