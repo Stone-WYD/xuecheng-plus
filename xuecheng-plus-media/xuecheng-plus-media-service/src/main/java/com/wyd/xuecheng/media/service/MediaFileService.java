@@ -85,4 +85,6 @@ public interface MediaFileService {
      * @date 2022/9/13 15:56
      */
     RestResponse mergechunks(Long companyId, String fileMd5, int chunkTotal, UploadFileParamsDto uploadFileParamsDto);
+
+    MediaFiles getFileById(String mediaId);
 }

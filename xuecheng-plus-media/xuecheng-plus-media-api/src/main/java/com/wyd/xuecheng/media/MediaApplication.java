@@ -1,4 +1,4 @@
-package com.wyd.xuecheng;
+package com.wyd.xuecheng.media;
 
 
 import com.spring4all.swagger.EnableSwagger2Doc;
