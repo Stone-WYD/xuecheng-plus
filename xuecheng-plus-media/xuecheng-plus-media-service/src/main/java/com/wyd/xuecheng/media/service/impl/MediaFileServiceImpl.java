@@ -201,7 +201,7 @@ public class MediaFileServiceImpl implements MediaFileService {
         try {
             fileInputStream = minioClient.getObject(
                     GetObjectArgs.builder()
-                            .bucket(bucket_files)
+                            .bucket("video")
                             .object(chunkFilePath)
                             .build());
 
@@ -225,7 +225,7 @@ public class MediaFileServiceImpl implements MediaFileService {
         //mimeType
         String mimeType = getMimeType(null);
         //将文件存储至minIO
-        boolean b = addMediaFilesToMinIO(localChunkFilePath, mimeType, bucket_files, chunkFilePath);
+        boolean b = addMediaFilesToMinIO(localChunkFilePath, mimeType, "video", chunkFilePath);
         if (!b) {
             log.debug("上传分块文件失败:{}", chunkFilePath);
             return RestResponse.validfail(false, "上传分块失败");
@@ -242,7 +242,7 @@ public class MediaFileServiceImpl implements MediaFileService {
         List<ComposeSource> sourceObjectList = Stream.iterate(0, i -> ++i)
                 .limit(chunkTotal)
                 .map(i -> ComposeSource.builder()
-                        .bucket(bucket_files)
+                        .bucket("video")
                         .object(chunkFileFolderPath.concat(Integer.toString(i)))
                         .build())
                 .collect(Collectors.toList());
@@ -257,7 +257,7 @@ public class MediaFileServiceImpl implements MediaFileService {
             //合并文件
             ObjectWriteResponse response = minioClient.composeObject(
                     ComposeObjectArgs.builder()
-                            .bucket(bucket_files)
+                            .bucket("video")
                             .object(mergeFilePath)
                             .sources(sourceObjectList)
                             .build());
@@ -269,7 +269,7 @@ public class MediaFileServiceImpl implements MediaFileService {
 
         // ====验证md5====
         //下载合并后的文件
-        File minioFile = downloadFileFromMinIO(bucket_files, mergeFilePath);
+        File minioFile = downloadFileFromMinIO("video", mergeFilePath);
         if(minioFile == null){
             log.debug("下载合并后文件失败,mergeFilePath:{}",mergeFilePath);
             return RestResponse.validfail(false, "下载合并后文件失败。");
@@ -294,7 +294,7 @@ public class MediaFileServiceImpl implements MediaFileService {
         }
 
         //文件入库
-        currentProxy.addMediaFilesToDb(companyId,fileMd5,uploadFileParamsDto,bucket_files,mergeFilePath);
+        currentProxy.addMediaFilesToDb(companyId,fileMd5,uploadFileParamsDto,"video",mergeFilePath);
         //=====清除分块文件=====
         clearChunkFiles(chunkFileFolderPath,chunkTotal);
         return RestResponse.success(true);
@@ -358,7 +358,7 @@ public class MediaFileServiceImpl implements MediaFileService {
                     .map(i -> new DeleteObject(chunkFileFolderPath.concat(Integer.toString(i))))
                     .collect(Collectors.toList());
 
-            RemoveObjectsArgs removeObjectsArgs = RemoveObjectsArgs.builder().bucket(bucket_files).objects(deleteObjects).build();
+            RemoveObjectsArgs removeObjectsArgs = RemoveObjectsArgs.builder().bucket("video").objects(deleteObjects).build();
             Iterable<Result<DeleteError>> results = minioClient.removeObjects(removeObjectsArgs);
             results.forEach(r->{
                 DeleteError deleteError = null;
