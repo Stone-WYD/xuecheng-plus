@@ -9,10 +9,12 @@ import com.wyd.xuecheng.base.model.PageParams;
 import com.wyd.xuecheng.base.model.PageResult;
 import com.wyd.xuecheng.base.model.RestResponse;
 import com.wyd.xuecheng.media.mapper.MediaFilesMapper;
+import com.wyd.xuecheng.media.mapper.MediaProcessMapper;
 import com.wyd.xuecheng.media.model.dto.QueryMediaParamsDto;
 import com.wyd.xuecheng.media.model.dto.UploadFileParamsDto;
 import com.wyd.xuecheng.media.model.dto.UploadFileResultDto;
 import com.wyd.xuecheng.media.model.po.MediaFiles;
+import com.wyd.xuecheng.media.model.po.MediaProcess;
 import com.wyd.xuecheng.media.service.MediaFileService;
 import io.minio.*;
 import io.minio.messages.DeleteError;
@@ -50,10 +52,13 @@ public class MediaFileServiceImpl implements MediaFileService {
     private MinioClient minioClient;
 
     @Autowired
+    private MediaFileService currentProxy;
+
+    @Autowired
     private MediaFilesMapper mediaFilesMapper;
 
     @Autowired
-    private MediaFileService currentProxy;
+    private MediaProcessMapper mediaProcessMapper;
 
     //普通文件桶
     @Value("${minio.bucket.files}")
@@ -111,64 +116,6 @@ public class MediaFileServiceImpl implements MediaFileService {
 
     }
 
-    //获取文件默认存储目录路径 年/月/日
-    private String getDefaultFolderPath() {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        return sdf.format(new Date()).replace("-", "/")+"/";
-    }
-
-    //获取文件的md5
-    private String getFileMd5(File file) {
-        try (FileInputStream fileInputStream = new FileInputStream(file)) {
-            return DigestUtils.md5Hex(fileInputStream);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    private String getMimeType(String extension){
-        if(extension==null)
-            extension = "";
-        //根据扩展名取出mimeType
-        ContentInfo extensionMatch = ContentInfoUtil.findExtensionMatch(extension);
-        //通用mimeType，字节流
-        String mimeType = MediaType.APPLICATION_OCTET_STREAM_VALUE;
-        if(extensionMatch!=null){
-            mimeType = extensionMatch.getMimeType();
-        }
-        return mimeType;
-    }
-
-    /**
-     * @description 将文件写入minIO
-     * @param localFilePath  文件地址
-     * @param bucket  桶
-     * @param objectName 对象名称
-     * @return void
-     * @author Mr.M
-     * @date 2022/10/12 21:22
-     */
-    public boolean addMediaFilesToMinIO(String localFilePath,String mimeType,String bucket, String objectName) {
-        try {
-            UploadObjectArgs testbucket = UploadObjectArgs.builder()
-                    .bucket(bucket)
-                    .object(objectName)
-                    .filename(localFilePath)
-                    .contentType(mimeType)
-                    .build();
-            minioClient.uploadObject(testbucket);
-            log.debug("上传文件到minio成功,bucket:{},objectName:{}",bucket,objectName);
-            System.out.println("上传成功");
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            log.error("上传文件到minio出错,bucket:{},objectName:{},错误原因:{}",bucket,objectName,e.getMessage(),e);
-            XueChengPlusException.cast("上传文件到文件系统失败");
-        }
-        return false;
-    }
-
     /**
      * @description 将文件信息添加到文件表
      * @param companyId  机构id
@@ -204,6 +151,8 @@ public class MediaFileServiceImpl implements MediaFileService {
                 log.error("保存文件信息到数据库失败,{}", mediaFiles);
                 XueChengPlusException.cast("保存文件信息失败");
             }
+            //添加到待处理任务表
+            addWaitingTask(mediaFiles);
             log.debug("保存文件信息到数据库成功,{}", mediaFiles);
         }
         return mediaFiles;
@@ -357,6 +306,7 @@ public class MediaFileServiceImpl implements MediaFileService {
      * @param objectName 对象名称
      * @return 下载后的文件
      */
+    @Override
     public File downloadFileFromMinIO(String bucket,String objectName){
         //临时文件
         File minioFile = null;
@@ -430,4 +380,79 @@ public class MediaFileServiceImpl implements MediaFileService {
         return fileMd5.charAt(0) + "/" + fileMd5.charAt(1) + "/" + fileMd5 + "/" + "chunk" + "/";
     }
 
+    //获取文件默认存储目录路径 年/月/日
+    private String getDefaultFolderPath() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        return sdf.format(new Date()).replace("-", "/")+"/";
+    }
+
+    //获取文件的md5
+    private String getFileMd5(File file) {
+        try (FileInputStream fileInputStream = new FileInputStream(file)) {
+            return DigestUtils.md5Hex(fileInputStream);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private String getMimeType(String extension){
+        if(extension==null)
+            extension = "";
+        //根据扩展名取出mimeType
+        ContentInfo extensionMatch = ContentInfoUtil.findExtensionMatch(extension);
+        //通用mimeType，字节流
+        String mimeType = MediaType.APPLICATION_OCTET_STREAM_VALUE;
+        if(extensionMatch!=null){
+            mimeType = extensionMatch.getMimeType();
+        }
+        return mimeType;
+    }
+
+    /**
+     * @description 将文件写入minIO
+     * @param localFilePath  文件地址
+     * @param bucket  桶
+     * @param objectName 对象名称
+     * @return void
+     * @author Mr.M
+     * @date 2022/10/12 21:22
+     */
+    @Override
+    public boolean addMediaFilesToMinIO(String localFilePath,String mimeType,String bucket, String objectName) {
+        try {
+            UploadObjectArgs testbucket = UploadObjectArgs.builder()
+                    .bucket(bucket)
+                    .object(objectName)
+                    .filename(localFilePath)
+                    .contentType(mimeType)
+                    .build();
+            minioClient.uploadObject(testbucket);
+            log.debug("上传文件到minio成功,bucket:{},objectName:{}",bucket,objectName);
+            System.out.println("上传成功");
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error("上传文件到minio出错,bucket:{},objectName:{},错误原因:{}",bucket,objectName,e.getMessage(),e);
+            XueChengPlusException.cast("上传文件到文件系统失败");
+        }
+        return false;
+    }
+
+    private void addWaitingTask(MediaFiles mediaFiles) {
+        //文件名称
+        String filename = mediaFiles.getFilename();
+        //文件扩展名
+        String exension = filename.substring(filename.lastIndexOf("."));
+        //文件mimeType
+        String mimeType = getMimeType(exension);
+        //如果是avi视频添加到视频待处理表
+        if(mimeType.equals("video/x-msvideo")){
+            MediaProcess mediaProcess = new MediaProcess();
+            BeanUtils.copyProperties(mediaFiles,mediaProcess);
+            mediaProcess.setStatus("1");//未处理
+            mediaProcess.setFailCount(0);//失败次数默认为0
+            mediaProcessMapper.insert(mediaProcess);
+        }
+    }
 }

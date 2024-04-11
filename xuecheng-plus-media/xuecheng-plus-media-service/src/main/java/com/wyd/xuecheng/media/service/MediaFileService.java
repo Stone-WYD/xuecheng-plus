@@ -8,6 +8,8 @@ import com.wyd.xuecheng.media.model.dto.UploadFileParamsDto;
 import com.wyd.xuecheng.media.model.dto.UploadFileResultDto;
 import com.wyd.xuecheng.media.model.po.MediaFiles;
 
+import java.io.File;
+
 /**
  * @author Mr.M
  * @version 1.0
@@ -37,6 +39,10 @@ public interface MediaFileService {
     UploadFileResultDto uploadFile(Long companyId, UploadFileParamsDto uploadFileParamsDto, String localFilePath);
 
     MediaFiles addMediaFilesToDb(Long companyId,String fileMd5,UploadFileParamsDto uploadFileParamsDto,String bucket,String objectName);
+
+    File downloadFileFromMinIO(String bucket, String objectName);
+
+    boolean addMediaFilesToMinIO(String localFilePath,String mimeType,String bucket, String objectName);
 
     /**
      * @description 检查文件是否存在
