@@ -30,6 +30,9 @@ spring:
           - data-id: log-${spring.profiles.active}.yaml
             group: xuecheng-plus-common
             refresh: true
+          - data-id: freemaker-config-${spring.profiles.active}.yaml
+            group: xuecheng-plus-common
+            refresh: true
 
 ##不使用 nacos 的配置管理时的配置
 #server:
