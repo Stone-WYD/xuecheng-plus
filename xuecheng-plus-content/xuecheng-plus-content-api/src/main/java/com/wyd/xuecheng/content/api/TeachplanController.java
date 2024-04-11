@@ -1,7 +1,9 @@
 package com.wyd.xuecheng.content.api;
 
+import com.wyd.xuecheng.content.model.dto.BindTeachplanMediaDto;
 import com.wyd.xuecheng.content.model.dto.SaveTeachplanDto;
 import com.wyd.xuecheng.content.model.dto.TeachplanDto;
+import com.wyd.xuecheng.content.service.TeachplanMediaService;
 import com.wyd.xuecheng.content.service.TeachplanService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -22,13 +24,28 @@ import java.util.List;
 public class TeachplanController {
 
     @Autowired
-    TeachplanService teachplanService;
+    private TeachplanService teachplanService;
+
+    @Autowired
+    private TeachplanMediaService teachplanMediaService;
 
     @ApiOperation("查询课程计划树形结构")
     @ApiImplicitParam(value = "courseId",name = "课程基础Id值",required = true,dataType = "Long",paramType = "path")
     @GetMapping("teachplan/{courseId}/tree-nodes")
     public List<TeachplanDto> getTreeNodes(@PathVariable Long courseId){
         return teachplanService.findTeachplanTree(courseId);
+    }
+
+    @ApiOperation(value = "课程计划和媒资信息绑定")
+    @PostMapping("/teachplan/association/media")
+    public void associationMedia(@RequestBody BindTeachplanMediaDto bindTeachplanMediaDto){
+        teachplanMediaService.associationMedia(bindTeachplanMediaDto);
+    }
+
+    @ApiOperation(value = "课程计划和媒资信息解除绑定")
+    @DeleteMapping("/teachplan/association/media/{teachPlanId}/{mediaId}")
+    public void unbindMedia(@PathVariable Long teachPlanId, @PathVariable String mediaId){
+        teachplanMediaService.unbindMedia(teachPlanId, mediaId);
     }
 
     @ApiOperation("课程计划创建或修改")
