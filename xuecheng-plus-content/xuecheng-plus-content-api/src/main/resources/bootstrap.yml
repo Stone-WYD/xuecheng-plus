@@ -18,7 +18,8 @@ spring:
         file-extension: yml
         refresh-enabled: true
         extension-configs:
-          # 扩展配置需要在同一个 spring.cloud.nacos.config.namespace 中，然后根据 data-id 和 group 找到具体的配置文件
+          # 扩展配置需要在同一个 spring.cloud.nacos.config.namespace 中，然后根据 data-id 和 group 找到具体的配置文件，
+          # 扩展配置的作用：覆盖共享配置中的同样内容
           - data-id: content-service-${spring.profiles.active}.yaml
             group: xuecheng-plus-project
             refresh: true
@@ -31,6 +32,9 @@ spring:
             group: xuecheng-plus-common
             refresh: true
           - data-id: freemaker-config-${spring.profiles.active}.yaml
+            group: xuecheng-plus-common
+            refresh: true
+          - data-id: feign-${spring.profiles.active}.yaml
             group: xuecheng-plus-common
             refresh: true
 
