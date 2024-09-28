@@ -1,27 +1,26 @@
 package com.wyd.xuecheng.content.service.impl;
 
+import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wyd.xuecheng.base.exception.XueChengPlusException;
 import com.wyd.xuecheng.base.model.PageParams;
 import com.wyd.xuecheng.base.model.PageResult;
-import com.wyd.xuecheng.content.mapper.CourseBaseMapper;
-import com.wyd.xuecheng.content.mapper.CourseCategoryMapper;
-import com.wyd.xuecheng.content.mapper.CourseMarketMapper;
-import com.wyd.xuecheng.content.model.dto.AddCourseDto;
-import com.wyd.xuecheng.content.model.dto.CourseBaseInfoDto;
-import com.wyd.xuecheng.content.model.dto.EditCourseDto;
-import com.wyd.xuecheng.content.model.dto.QueryCourseParamsDto;
+import com.wyd.xuecheng.content.mapper.*;
+import com.wyd.xuecheng.content.model.dto.*;
 import com.wyd.xuecheng.content.model.po.CourseBase;
 import com.wyd.xuecheng.content.model.po.CourseCategory;
 import com.wyd.xuecheng.content.model.po.CourseMarket;
+import com.wyd.xuecheng.content.model.po.CourseTeacher;
 import com.wyd.xuecheng.content.service.CourseBaseInfoService;
+import com.wyd.xuecheng.content.service.TeachplanService;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -43,6 +42,13 @@ public class CourseBaseInfoServiceImpl  implements CourseBaseInfoService {
 
     @Autowired
     private CourseCategoryMapper courseCategoryMapper;
+
+    @Resource
+    private CourseTeacherMapper courseTeacherMapper;
+
+    @Autowired
+    private TeachplanService teachplanService;
+
 
     @Override
     public PageResult<CourseBase> queryCourseBaseList(PageParams pageParams, QueryCourseParamsDto queryCourseParamsDto) {
@@ -208,6 +214,40 @@ public class CourseBaseInfoServiceImpl  implements CourseBaseInfoService {
         saveCourseMarket(courseMarket);
         //查询课程信息
         return this.getCourseBaseInfo(courseId);
+    }
+
+    @Transactional
+    @Override
+    public void deleteCourseById(Long courseId) {
+        // 1. 获取课程信息
+        CourseBase courseBase = courseBaseMapper.selectById(courseId);
+        if(courseBase==null){
+            XueChengPlusException.cast("课程不存在");
+        }
+        // 2. 判断审核状态
+        if (!"202002".equals(courseBase.getAuditStatus())) {
+            XueChengPlusException.cast("只能删除未审核的课程");
+        }
+        // 3. 删除程相关的基本信息、营销信息、课程计划、课程教师信息。
+        // 3.1. 基本信息删除
+        courseBaseMapper.deleteById(courseId);
+        // 3.2. 营销信息删除
+        courseMarketMapper.deleteById(courseId);
+        // 3.3. 教师信息删除
+        LambdaQueryWrapper<CourseTeacher> wrapper = new LambdaQueryWrapper<>();
+        courseTeacherMapper.delete(wrapper.eq(CourseTeacher::getCourseId, courseId));
+        // 3.4. 课程计划删除：为了避免分布式事务，这里不进行课程计划的实际删除，
+        // 而只是进行查询，如果还有课程计划，则要求用户删除课程计划后才能删除课程
+        List<TeachplanDto> teachplanTree = teachplanService.findTeachplanTree(courseId);
+        if (CollectionUtil.isEmpty(teachplanTree)) {
+            XueChengPlusException.cast("请先清空教学计划再删除课程");
+        }
+        // 4. 查询一遍所有信息，都查不到说明删除课程信息成功
+        if (courseBaseMapper.selectById(courseId) != null ||
+                courseMarketMapper.selectById(courseId) != null ||
+                CollectionUtil.isNotEmpty(courseTeacherMapper.selectList(wrapper.eq(CourseTeacher::getCourseId, courseId)))) {
+            XueChengPlusException.cast("系统异常，删除失败");
+        }
     }
 
 }

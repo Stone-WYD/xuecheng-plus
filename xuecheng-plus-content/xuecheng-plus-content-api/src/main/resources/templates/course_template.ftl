@@ -7,12 +7,12 @@
     <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
     <meta name="description" content="">
     <meta name="author" content="">
-    <link rel="icon" href="/static/img/asset-favicon.ico">
+    <link rel="icon" href="www.51xuecheng.cn/static/img/asset-favicon.ico">
     <title>学成在线-${model.courseBase.name}</title>
 
-    <link rel="stylesheet" href="/static/plugins/normalize-css/normalize.css" />
-    <link rel="stylesheet" href="/static/plugins/bootstrap/dist/css/bootstrap.css" />
-    <link rel="stylesheet" href="/static/css/page-learing-article.css" />
+    <link rel="stylesheet" href="www.51xuecheng.cn/static/plugins/normalize-css/normalize.css" />
+    <link rel="stylesheet" href="www.51xuecheng.cn/static/plugins/bootstrap/dist/css/bootstrap.css" />
+    <link rel="stylesheet" href="www.51xuecheng.cn/static/css/page-learing-article.css" />
 </head>
 
 <body data-spy="scroll" data-target="#articleNavbar" data-offset="150">
@@ -304,7 +304,7 @@
                         </div>
                         <div class="item">
                             <div class="item-left">
-                                <p><img src="/static/img/widget-myImg.jpg" width="60px" alt=""></p>
+                                <p><img src="www.51xuecheng.cn/static/img/widget-myImg.jpg" width="60px" alt=""></p>
                                 <p>毛老师</p>
                             </div>
                             <div class="item-right">

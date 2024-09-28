@@ -37,6 +37,9 @@ public class TeachplanServiceImpl extends ServiceImpl<TeachplanMapper, Teachplan
     @Autowired
     TeachplanMediaMapper teachplanMediaMapper;
 
+    @Autowired
+    TeachplanService teachplanService;
+
     @Override
     public List<TeachplanDto> findTeachplanTree(long courseId) {
         return teachplanMapper.selectTreeNodes(courseId);

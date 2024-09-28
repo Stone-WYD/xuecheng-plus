@@ -31,12 +31,12 @@
         <okhttp.version>4.8.1</okhttp.version>
         <swagger-spring-boot-starter.version>1.9.0.RELEASE</swagger-spring-boot-starter.version>
         <elasticsearch.version>7.12.1</elasticsearch.version>
+        <hutool.version>5.8.16</hutool.version>
     </properties>
 
 
     <dependencyManagement>
         <dependencies>
-
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-dependencies</artifactId>
@@ -183,6 +183,12 @@
                 <artifactId>elasticsearch</artifactId>
                 <version>${elasticsearch.version}</version>
             </dependency>
+
+            <dependency>
+                <groupId>cn.hutool</groupId>
+                <artifactId>hutool-all</artifactId>
+                <version>${hutool.version}</version>
+            </dependency>
         </dependencies>
 
     </dependencyManagement>
@@ -206,6 +212,7 @@
             </resource>
         </resources>
         <plugins>
+            <!-- 这个插件可以配置 Maven 编译时使用的 jdk 版本 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -233,7 +240,7 @@
                 <version>3.3.0</version>
                 <configuration>
                     <encoding>utf-8</encoding>
-                    <!--使用默认分隔符，resource中可以使用分割符定义过虑的路径-->
+                    <!--使用默认占位符，resource的文件中可以使用 ${} 这样的占位符-->
                     <useDefaultDelimiters>true</useDefaultDelimiters>
                 </configuration>
             </plugin>
