@@ -7,6 +7,7 @@ import com.wyd.xuecheng.media.model.dto.QueryMediaParamsDto;
 import com.wyd.xuecheng.media.model.dto.UploadFileParamsDto;
 import com.wyd.xuecheng.media.model.dto.UploadFileResultDto;
 import com.wyd.xuecheng.media.model.po.MediaFiles;
+import io.minio.StatObjectResponse;
 
 import java.io.File;
 

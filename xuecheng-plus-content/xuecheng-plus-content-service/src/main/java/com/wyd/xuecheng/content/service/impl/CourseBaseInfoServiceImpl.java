@@ -218,11 +218,17 @@ public class CourseBaseInfoServiceImpl  implements CourseBaseInfoService {
 
     @Transactional
     @Override
-    public void deleteCourseById(Long courseId) {
+    public void deleteCourseById(Long companyId, Long courseId) {
+
+
         // 1. 获取课程信息
         CourseBase courseBase = courseBaseMapper.selectById(courseId);
         if(courseBase==null){
             XueChengPlusException.cast("课程不存在");
+        }
+        //校验本机构只能修改本机构的课程
+        if(!courseBase.getCompanyId().equals(companyId)){
+            XueChengPlusException.cast("本机构只能删除本机构的课程");
         }
         // 2. 判断审核状态
         if (!"202002".equals(courseBase.getAuditStatus())) {
@@ -239,7 +245,7 @@ public class CourseBaseInfoServiceImpl  implements CourseBaseInfoService {
         // 3.4. 课程计划删除：为了避免分布式事务，这里不进行课程计划的实际删除，
         // 而只是进行查询，如果还有课程计划，则要求用户删除课程计划后才能删除课程
         List<TeachplanDto> teachplanTree = teachplanService.findTeachplanTree(courseId);
-        if (CollectionUtil.isEmpty(teachplanTree)) {
+        if (!CollectionUtil.isEmpty(teachplanTree)) {
             XueChengPlusException.cast("请先清空教学计划再删除课程");
         }
         // 4. 查询一遍所有信息，都查不到说明删除课程信息成功

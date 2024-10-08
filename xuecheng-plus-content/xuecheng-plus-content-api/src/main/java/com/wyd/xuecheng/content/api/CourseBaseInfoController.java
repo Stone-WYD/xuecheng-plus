@@ -59,9 +59,11 @@ public class CourseBaseInfoController {
     }
 
     @ApiOperation("根据课程id删除课程信息")
-    @GetMapping("/course/{courseId}")
+    @DeleteMapping ("/course/{courseId}")
     public void deleteCourseById(@PathVariable Long courseId){
-        courseBaseInfoService.deleteCourseById(courseId);
+        //机构id，由于认证系统没有上线暂时硬编码
+        Long companyId = 1232141425L;
+        courseBaseInfoService.deleteCourseById(companyId, courseId);
     }
 
 }

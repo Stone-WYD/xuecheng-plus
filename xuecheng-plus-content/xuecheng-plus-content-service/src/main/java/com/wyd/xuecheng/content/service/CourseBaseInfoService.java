@@ -50,5 +50,5 @@ public interface CourseBaseInfoService  {
      */
      CourseBaseInfoDto updateCourseBase(Long companyId, EditCourseDto dto);
 
-    void deleteCourseById(Long courseId);
+    void deleteCourseById(Long companyId, Long courseId);
 }
