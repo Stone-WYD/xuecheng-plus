@@ -8,10 +8,7 @@ import com.wyd.xuecheng.base.model.PageParams;
 import com.wyd.xuecheng.base.model.PageResult;
 import com.wyd.xuecheng.content.mapper.*;
 import com.wyd.xuecheng.content.model.dto.*;
-import com.wyd.xuecheng.content.model.po.CourseBase;
-import com.wyd.xuecheng.content.model.po.CourseCategory;
-import com.wyd.xuecheng.content.model.po.CourseMarket;
-import com.wyd.xuecheng.content.model.po.CourseTeacher;
+import com.wyd.xuecheng.content.model.po.*;
 import com.wyd.xuecheng.content.service.CourseBaseInfoService;
 import com.wyd.xuecheng.content.service.TeachplanService;
 import org.apache.commons.lang.StringUtils;
@@ -220,7 +217,6 @@ public class CourseBaseInfoServiceImpl  implements CourseBaseInfoService {
     @Override
     public void deleteCourseById(Long companyId, Long courseId) {
 
-
         // 1. 获取课程信息
         CourseBase courseBase = courseBaseMapper.selectById(courseId);
         if(courseBase==null){
@@ -240,18 +236,18 @@ public class CourseBaseInfoServiceImpl  implements CourseBaseInfoService {
         // 3.2. 营销信息删除
         courseMarketMapper.deleteById(courseId);
         // 3.3. 教师信息删除
-        LambdaQueryWrapper<CourseTeacher> wrapper = new LambdaQueryWrapper<>();
-        courseTeacherMapper.delete(wrapper.eq(CourseTeacher::getCourseId, courseId));
-        // 3.4. 课程计划删除：为了避免分布式事务，这里不进行课程计划的实际删除，
-        // 而只是进行查询，如果还有课程计划，则要求用户删除课程计划后才能删除课程
-        List<TeachplanDto> teachplanTree = teachplanService.findTeachplanTree(courseId);
-        if (!CollectionUtil.isEmpty(teachplanTree)) {
-            XueChengPlusException.cast("请先清空教学计划再删除课程");
-        }
+        LambdaQueryWrapper<CourseTeacher> courseTeacherWrapper = new LambdaQueryWrapper<>();
+        courseTeacherMapper.delete(courseTeacherWrapper.eq(CourseTeacher::getCourseId, courseId));
+        // 3.4. 课程计划删除
+        LambdaQueryWrapper<Teachplan> teachplanWrapper = new LambdaQueryWrapper<>();
+        teachplanService.remove(teachplanWrapper.eq(Teachplan::getCourseId, courseId));
+
         // 4. 查询一遍所有信息，都查不到说明删除课程信息成功
         if (courseBaseMapper.selectById(courseId) != null ||
                 courseMarketMapper.selectById(courseId) != null ||
-                CollectionUtil.isNotEmpty(courseTeacherMapper.selectList(wrapper.eq(CourseTeacher::getCourseId, courseId)))) {
+                CollectionUtil.isNotEmpty(courseTeacherMapper.selectList(courseTeacherWrapper.eq(CourseTeacher::getCourseId, courseId))) ||
+                CollectionUtil.isNotEmpty(teachplanService.list(teachplanWrapper.eq(Teachplan::getCourseId, courseId)))
+        ) {
             XueChengPlusException.cast("系统异常，删除失败");
         }
     }
