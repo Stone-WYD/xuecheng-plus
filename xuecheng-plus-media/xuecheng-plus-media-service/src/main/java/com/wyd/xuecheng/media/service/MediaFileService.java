@@ -88,4 +88,6 @@ public interface MediaFileService {
     RestResponse mergechunks(Long companyId, String fileMd5, int chunkTotal, UploadFileParamsDto uploadFileParamsDto);
 
     MediaFiles getFileById(String mediaId);
+
+    void removeByMediaId(String mediaId);
 }

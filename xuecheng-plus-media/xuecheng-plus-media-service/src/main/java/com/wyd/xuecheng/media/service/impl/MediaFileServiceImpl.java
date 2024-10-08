@@ -328,6 +328,27 @@ public class MediaFileServiceImpl implements MediaFileService {
         return mediaFilesMapper.selectById(mediaId);
     }
 
+    @Override
+    @Transactional
+    public void removeByMediaId(String mediaId) {
+        MediaFiles mediaFile = mediaFilesMapper.selectById(mediaId);
+        if (mediaFile == null) return;
+        String bucket = mediaFile.getBucket();
+        String filePath = mediaFile.getFilePath();
+        // 删除数据库记录
+        mediaFilesMapper.deleteById(mediaId);
+        // minio 清除资源
+        if (StringUtil.isNotEmpty(bucket) && StringUtil.isNotEmpty(filePath)) {
+            try {
+                minioClient.removeObject(
+                        RemoveObjectArgs.builder().bucket(bucket).object(filePath).build());
+            } catch (Exception e) {
+                log.error("资源删除失败：{}", e.getMessage());
+                XueChengPlusException.cast("资源删除失败！");
+            }
+        }
+    }
+
     /**
      * 从minio获取文件信息
      * @param bucket 桶
