@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
  */
 @Api(value = "媒资文件管理接口",tags = "媒资文件管理接口")
 @RestController
+@RequestMapping("/open")
 public class MediaOpenController {
 
     @Autowired
@@ -31,11 +32,5 @@ public class MediaOpenController {
             XueChengPlusException.cast("视频还没有转码处理");
         }
         return RestResponse.success(mediaFiles.getUrl());
-    }
-
-    @ApiOperation("移除资源")
-    @DeleteMapping("/{mediaId}")
-    public void removeByMediaId(@PathVariable String mediaId){
-        mediaFileService.removeByMediaId(mediaId);
     }
 }
