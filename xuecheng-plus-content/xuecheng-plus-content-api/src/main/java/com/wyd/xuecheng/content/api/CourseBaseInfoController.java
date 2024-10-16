@@ -9,6 +9,7 @@ import com.wyd.xuecheng.content.model.po.CourseBase;
 import com.wyd.xuecheng.content.service.CourseBaseInfoService;
 import com.wyd.xuecheng.base.model.PageParams;
 import com.wyd.xuecheng.base.model.PageResult;
+import com.wyd.xuecheng.content.util.SecurityUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -49,8 +50,10 @@ public class CourseBaseInfoController {
     @GetMapping("/course/{courseId}")
     public CourseBaseInfoDto getCourseBaseById(@PathVariable Long courseId){
         // 测试：取出当前用户身份
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        System.out.println(principal);
+//        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        SecurityUtil.XcUser user = SecurityUtil.getUser();
+        System.out.println(user);
+
         return courseBaseInfoService.getCourseBaseInfo(courseId);
     }
 

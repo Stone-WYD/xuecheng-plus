@@ -23,6 +23,7 @@ import org.springframework.security.oauth2.provider.token.TokenStore;
 
   //资源服务标识
   public static final String RESOURCE_ID = "xuecheng-plus";
+ //  public static final String RESOURCE_ID = "ttt111";
 
   @Autowired
   TokenStore tokenStore;
