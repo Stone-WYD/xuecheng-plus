@@ -7,6 +7,9 @@ Content-Type: application/json
   "courseName": ""
 }
 
+###
+GET http://localhost:63010/content/course/135
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsieHVlY2hlbmctcGx1cyJdLCJ1c2VyX25hbWUiOiJ6aGFuZ3NhbiIsInNjb3BlIjpbImFsbCJdLCJleHAiOjE3Mjg5OTY5NTIsImF1dGhvcml0aWVzIjpbInAxIl0sImp0aSI6IjQ4NGVjZjBhLTdhOWUtNDIwNC1iMzBmLWI1NmFhZmIyNDg1NiIsImNsaWVudF9pZCI6IlhjV2ViQXBwIn0.P6mAeXMF89BcQYFG_mLMjmtu72rzelBuy6Gwy70xM-Y
 
 
 
