@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
@@ -33,7 +34,7 @@ public class AuthorizationServer extends AuthorizationServerConfigurerAdapter {
     @Autowired
     private WebSecurityConfig webSecurityConfig;
 
-    //客户端详情服务
+    // 客户端详情服务
     @Override
     public void configure(ClientDetailsServiceConfigurer clients)
             throws Exception {
@@ -68,29 +69,5 @@ public class AuthorizationServer extends AuthorizationServerConfigurerAdapter {
                 .allowFormAuthenticationForClients()                //表单认证（申请令牌）
         ;
     }
-
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-//        //密码为明文方式
-//        return NoOpPasswordEncoder.getInstance();
-        // 不管前端传入的密码是什么，存放时都会进行一层加密，这样做能更好的提高系统安全性，保护用户信息。
-        return new BCryptPasswordEncoder();
-    }
-
-
-
- /*public static void main(String[] args) {
-        String password = "111111";
-        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        for(int i=0;i<10;i++) {
-            //每个计算出的Hash值都不一样
-            String hashPass = passwordEncoder.encode(password);
-            System.out.println(hashPass);
-            //虽然每次计算的密码Hash值不一样但是校验是通过的
-            boolean f = passwordEncoder.matches(password, hashPass);
-            System.out.println(f);
-        }
-    }*/
 
 }
