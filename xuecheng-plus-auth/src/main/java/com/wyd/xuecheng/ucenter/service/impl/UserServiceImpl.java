@@ -53,7 +53,8 @@ public class UserServiceImpl implements UserDetailsService {
         AuthService authService = applicationContext.getBean(authParams.getAuthType() + "_authservice", AuthService.class);
         XcUserExt xcUserExt = authService.execute(authParams);
         return getUserPrincipal(xcUserExt);
-        /*// 用户姓名
+        /* 为了统一认证，要把 Spring Security 原本的密码校验功能去除掉，然后走上面的新的校验逻辑
+        // 用户姓名
         String username = authParams.getUsername();
         XcUser user = xcUserMapper.selectOne(new LambdaQueryWrapper<XcUser>().eq(XcUser::getUsername, username));
         if(user==null){
