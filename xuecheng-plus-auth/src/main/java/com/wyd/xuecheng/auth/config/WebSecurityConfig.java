@@ -48,7 +48,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
 
- /*public static void main(String[] args) {
+ public static void main(String[] args) {
         String password = "111111";
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         for(int i=0;i<10;i++) {
@@ -59,5 +59,5 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             boolean f = passwordEncoder.matches(password, hashPass);
             System.out.println(f);
         }
-    }*/
+    }
 }

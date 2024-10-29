@@ -19,4 +19,4 @@ POST http://localhost:63070/auth/oauth/check_token?token=eyJhbGciOiJIUzI1NiIsInR
 
 ################扩展认证请求参数后######################
 ###密码模式
-POST http://localhost:63070/auth/oauth/token?client_id=XcWebApp&client_secret=XcWebApp&grant_type=password&username={"username":"stu1","authType":"password","password":"111111"}
+POST http://localhost:63070/auth/oauth/token?client_id=XcWebApp&client_secret=XcWebApp&grant_type=password&username={"username":"stu1","authType":"password","password":"111","checkcode":"3p8r","checkcodekey":"checkcode:35a6d201f08644fdb9d7d6b4f76f4421"}

@@ -52,9 +52,9 @@ public class PasswordAuthServiceImpl implements AuthService {
         XcUserExt xcUserExt = new XcUserExt();
         BeanUtils.copyProperties(xcUser, xcUserExt);
         // 校验密码
-        String passwordDb = xcUserExt.getPassword();
         String passwordForm = authParamsDto.getPassword();
-        if (!passwordEncoder.matches(passwordDb, passwordForm)) {
+        String passwordDb = xcUserExt.getPassword();
+        if (!passwordEncoder.matches(passwordForm, passwordDb)) {
             throw new RuntimeException("账号或密码错误");
         }
         return xcUserExt;
