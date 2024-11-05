@@ -2,9 +2,11 @@ package com.wyd.xuecheng.ucenter.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.wyd.xuecheng.ucenter.mapper.XcMenuMapper;
 import com.wyd.xuecheng.ucenter.mapper.XcUserMapper;
 import com.wyd.xuecheng.ucenter.model.dto.AuthParamsDto;
 import com.wyd.xuecheng.ucenter.model.dto.XcUserExt;
+import com.wyd.xuecheng.ucenter.model.po.XcMenu;
 import com.wyd.xuecheng.ucenter.model.po.XcUser;
 import com.wyd.xuecheng.ucenter.service.AuthService;
 import lombok.extern.slf4j.Slf4j;
@@ -15,7 +17,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -28,6 +32,9 @@ import java.util.List;
 public class UserServiceImpl implements UserDetailsService {
     @Autowired
     private XcUserMapper xcUserMapper;
+
+    @Autowired
+    private XcMenuMapper xcMenuMapper;
 
     @Autowired
     private ApplicationContext applicationContext;
@@ -78,14 +85,22 @@ public class UserServiceImpl implements UserDetailsService {
 
     private UserDetails getUserPrincipal(XcUserExt user) {
         //用户权限,如果不加报Cannot pass a null GrantedAuthority collection
-        String[] authorities = {"p1"};
+        // 去数据库获取权限列表
+        List<XcMenu> xcMenus = xcMenuMapper.selectPermissionByUserId(user.getId());
+        List<String> permissions = new ArrayList<>();
+        if (CollectionUtils.isEmpty(xcMenus)) {
+            permissions.add("p1");
+        } else {
+            xcMenus.forEach(p -> permissions.add(p.getCode()));
+        }
+        user.setPermissions(permissions);
         String password = user.getPassword();
         //为了安全在令牌中不放密码
         user.setPassword(null);
         //将user对象转json
         String userString = JSON.toJSONString(user);
         //创建UserDetails对象
-        UserDetails userDetails = User.withUsername(userString).password(password ).authorities(authorities).build();
+        UserDetails userDetails = User.withUsername(userString).password(password ).authorities(permissions.toArray(new String[0])).build();
         return userDetails;
     }
 
