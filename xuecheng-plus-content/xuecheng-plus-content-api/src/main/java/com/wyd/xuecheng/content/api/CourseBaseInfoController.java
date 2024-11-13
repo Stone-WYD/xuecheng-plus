@@ -46,7 +46,7 @@ public class CourseBaseInfoController {
 
     @ApiOperation("新增课程基础信息")
     @PostMapping("/course")
-    @PreAuthorize("hasAuthority('xc_teachmanager_course_list')")
+    @PreAuthorize("hasAuthority('xc_teachmanager_course_add')")
     public CourseBaseInfoDto createCourseBase(@RequestBody @Validated({ValidationGroups.Inster.class, Default.class}) AddCourseDto addCourseDto){
         //取出用户身份
         SecurityUtil.XcUser user = SecurityUtil.getUser();
@@ -64,7 +64,7 @@ public class CourseBaseInfoController {
 
     @ApiOperation("修改课程基础信息")
     @PutMapping("/course")
-    @PreAuthorize("hasAuthority('xc_teachmanager_course_list')")
+    @PreAuthorize("hasAuthority('xc_teachmanager_course_base')")
     public CourseBaseInfoDto modifyCourseBase(@RequestBody @Validated EditCourseDto editCourseDto){
         //取出用户身份
         SecurityUtil.XcUser user = SecurityUtil.getUser();
@@ -75,7 +75,7 @@ public class CourseBaseInfoController {
 
     @ApiOperation("根据课程id删除课程信息")
     @DeleteMapping ("/course/{courseId}")
-    @PreAuthorize("hasAuthority('xc_teachmanager_course_list')")
+    @PreAuthorize("hasAuthority('xc_teachmanager_course_del')")
     public void deleteCourseById(@PathVariable Long courseId){
         //取出用户身份
         SecurityUtil.XcUser user = SecurityUtil.getUser();

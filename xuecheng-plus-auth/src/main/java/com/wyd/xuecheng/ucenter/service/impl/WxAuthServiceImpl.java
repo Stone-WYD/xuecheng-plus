@@ -40,10 +40,10 @@ public class WxAuthServiceImpl implements AuthService, WxAuthService{
     @Autowired
     private RestTemplate restTemplate;
 
-    @Value("${weixin.appid}")
+    @Value("${weixin.appid:111}")
     private String appid;
 
-    @Value("${weixin.secret}")
+    @Value("${weixin.secret:111}")
     private String secret;
 
     @Autowired
