@@ -239,6 +239,11 @@ public class CoursePublishServiceImpl extends ServiceImpl<CoursePublishMapper, C
         file.delete();
     }
 
+    @Override
+    public CoursePublish getCoursePublish(Long courseId) {
+        return coursePublishMapper.selectById(courseId);
+    }
+
     /**
      * @description 保存课程发布信息
      * @param courseId  课程id

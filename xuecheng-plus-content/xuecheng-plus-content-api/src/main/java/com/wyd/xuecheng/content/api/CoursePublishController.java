@@ -1,6 +1,7 @@
 package com.wyd.xuecheng.content.api;
 
 import com.wyd.xuecheng.content.model.dto.CoursePreviewDto;
+import com.wyd.xuecheng.content.model.po.CoursePublish;
 import com.wyd.xuecheng.content.service.CoursePublishService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +49,15 @@ public class CoursePublishController {
     public void coursepublish(@PathVariable("courseId") Long courseId){
         Long companyId = 1232141425L;
         coursePublishService.publish(companyId,courseId);
+    }
+
+    // 以 /r 为前缀的接口，属于给其他微服务调用的接口，不需要认证
+    @ApiOperation("查询课程发布信息")
+    @ResponseBody
+    @GetMapping("/r/coursepublish/{courseId}")
+    public CoursePublish getCoursepublish(@PathVariable("courseId") Long courseId) {
+        CoursePublish coursePublish = coursePublishService.getCoursePublish(courseId);
+        return coursePublish;
     }
 
 }
